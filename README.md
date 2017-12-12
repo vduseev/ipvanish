@@ -11,7 +11,7 @@ It wraps it in a bunch of `argparse` command line *"helpies"*.
 It also caches the response and reloads it only if **120** seconds have passed since the last API call.
 The source file is about ~200 lines of `Python 3` code in a single script.
 The project uses `requests` and `appdirs` packages
-(for cross-platform implementation of user-app cache folder)
+(for cross-platform implementation of user-app cache folder).
 
 To be honest, this script is dumb as 2 cents,
 but it solves a problem of quickly listing IPVanish servers.
