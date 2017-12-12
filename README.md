@@ -9,8 +9,9 @@ r = requests.get('https://www.ipvanish.com/api/servers.geojson')
 ```
 Then it wraps it in a bunch of `argparse` command line helpies.
 It also caches the response and reloads it only if **120** seconds have passed since last API call.
-The source file is about ~200 lines of Python 3 code in a single script
-based on pure Python 3 installation, no fancy libraries.
+The source file is about ~200 lines of Python 3 code in a single script.
+Uses `requests` and `appdirs` packages (for cross-platform user-app
+cache folder access)
 
 ## Use Cases
 * Get the whole list of servers `ipvanish`
@@ -39,6 +40,11 @@ ipvanish States -n 30
 ```
 
 ## Installation
+
+### Dependencies
+* `python 3`
+* `requests`
+* `appdirs`
 
 ### MacOS X
 If you don't have Python 3, then you need to install it using Homebrew.
