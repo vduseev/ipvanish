@@ -13,6 +13,9 @@ The source file is about ~200 lines of Python 3 code in a single script.
 Uses `requests` and `appdirs` packages (for cross-platform user-app
 cache folder access)
 
+This script is dumb as 2 cents, but it solves a problem of quickly listing
+IPVanish servers.
+
 ## Use Cases
 * Get the whole list of servers `ipvanish`
 * Filter by country code `ipvanish CH` or `ipvanish US` or whatever
