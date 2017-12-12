@@ -1,6 +1,6 @@
 # IPVanish Command Line Tool
 
-`Live Demo or GIF here`
+[![asciicast](https://asciinema.org/a/152203.png)](https://asciinema.org/a/152203)
 
 ## What It Does
 It calls **IPVanish API** for a list of current server statuses.
