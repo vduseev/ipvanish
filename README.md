@@ -104,3 +104,12 @@ git clone git@github.com:vduseev/ipvanish.git
 cd ipvanish
 ./ipvanish
 ```
+
+## TODO
+
+* [x] Requesting whole list of servers
+* [x] Filtering of output
+* [x] Limiting the number of output servers
+* [x] Sort by latency
+* [ ] Print all available locations
+* [ ] Create VPN connection on Mac OS X
