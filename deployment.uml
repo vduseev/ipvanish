@@ -1,0 +1,91 @@
+@startuml
+
+actor "Developer" as developer
+participant "GitHub\nIssues" as issues
+participant "Local\nrepo" as local
+participant "Local\nJekyll" as jekyll
+participant "GitHub\nDEV" as dev
+participant "CI\nServer" as ciserver
+participant "AWS S3" as s3
+participant "GitHub\nMaster" as master
+participant "PyPi" as pypi
+
+group Start with an Issue
+  developer --> issues : create (ghi)
+  activate issues #FFBBBB
+  issues -> developer : pick up (ghi)
+end
+
+group Change Docs
+  developer -> local : change (docs/)
+  activate local
+
+  local -> jekyll : build (docs/)
+  activate jekyll
+  jekyll -> developer : verify (docs/)
+  deactivate jekyll
+end
+
+group Write Tests
+  developer -> local : add tests
+  local -[#red]-> local : fail
+end
+
+group Change Source Code
+  developer -> local : change source code
+  local -[#green]-> local : pass
+end
+
+group Commit Changes
+  developer -> local : commit:\n- (docs/)\n- (source/)\nComment: Closes #N
+  local -> dev : push
+  deactivate local
+  activate dev
+end
+
+group Continuous Integration
+  dev -> ciserver : commit\nhook
+  activate ciserver
+  
+  group Build Docs
+    ciserver --> ciserver : build (docs/)
+    ciserver -> s3 : push (_site)\nto "s3/dev"
+  end
+
+  group Build Code
+    ciserver --> ciserver : build (source/)
+    ciserver --> ciserver : test (build/) 
+  end
+
+  ciserver -[#green]> dev : report status
+  deactivate ciserver
+  deactivate dev
+end
+
+group Pull Request
+  developer -[#green]> master : pull request
+  activate master
+  master -> ciserver : commit\nhook
+  activate ciserver
+
+  group Build Docs
+    ciserver --> ciserver : build (docs/)
+    ciserver -> s3 : push (_site)\nto "s3/master"
+  end
+
+  group Build Code
+    ciserver --> ciserver : build (source/)
+    ciserver --> ciserver : test (build/) 
+  end
+
+  group Push to PyPi
+    ciserver -> pypi : publish (build/)
+    deactivate ciserver
+  end
+
+  master -> issues: close
+  deactivate master
+  deactivate issues
+end
+
+@enduml

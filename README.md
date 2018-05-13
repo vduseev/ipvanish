@@ -3,7 +3,8 @@
 [![asciicast](https://asciinema.org/a/152203.png)](https://asciinema.org/a/152203)
 
 ## What It Does
-It calls **IPVanish API** for a list of current server statuses.
+
+It makes a call to **IPVanish API** for a list of current server statuses.
 ```
 r = requests.get('https://www.ipvanish.com/api/servers.geojson')
 ```
@@ -17,6 +18,7 @@ To be honest, this script is dumb as 2 cents,
 but it solves a problem of quickly listing IPVanish servers.
 
 ## Use Cases (when to use it)
+
 * Get the whole list of servers: `ipvanish`
 * Filter by country code: `ipvanish CH` or `ipvanish US` or whatever
 * Filter by country name: `ipvanish States`
@@ -29,6 +31,7 @@ but it solves a problem of quickly listing IPVanish servers.
 * Show this help message: `ipvanish -h`
 
 ## User Stories (how do you actually use it)
+
 __Quickly, show me top 10 least loaded online VPN servers in Frankfurt:__
 ```
 ipvanish Frankfurt -lo -n 10
@@ -88,11 +91,13 @@ Atlanta, United States atl-a01.ipvanish.com 65% capacity
 ## Installation
 
 ### Dependencies
+
 * `python 3`
 * `requests`
 * `appdirs`
 
 ### MacOS X
+
 If you don't have Python 3, then you need to install it using Homebrew.
 ```
 brew install python3
