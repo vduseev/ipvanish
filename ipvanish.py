@@ -1,5 +1,6 @@
 import argparse
 import requests
+import logging
 import appdirs
 import time
 import json
@@ -12,10 +13,12 @@ def process_command():
     data = get_data()
     args = arg_parser().parse_args()
     results = search(args.search_term, data)
+
     if args.latency_sorting:
         results = sorted(
             results, key=lambda server: server['properties']['capacity']
         )
+
     if args.online_filter:
         filtered = filter(
             lambda server: server['properties']['online'],
@@ -29,19 +32,27 @@ def process_command():
         print_server(server)
 
 def get_data():
-    # 1. Check if fresh cached version is available
     if is_cache_fresh():
-        print('Cache is still fresh. Reusing downloaded API response.')
+        # 1. Check if fresh cached version is available
+        logging.info(
+            ('Cache is still fresh. '
+             'Reusing downloaded API response.')
+        )
         data = read_cache()
-    # 2. Else retrieve from API and cache that
     else:
-        print('Requesting servers status from IPVanish.')
+        # 2. Else retrieve from API and cache that
+        logging.info(
+            'Requesting server status from IPVanish.'
+        )
         data = call_api()
         cache_data(data)
     return data
 
 def arg_parser():
-    parser = argparse.ArgumentParser(description='IPVanish Command Line Tool')
+    parser = argparse.ArgumentParser(
+        description='IPVanish Command Line Tool'
+    )
+
     parser.add_argument(
         'search_term',
         nargs='?',
@@ -49,6 +60,7 @@ def arg_parser():
         type=str,
         help='Search filter'
     )
+
     parser.add_argument(
         '-l', '--l',
         action='store_true',
@@ -56,6 +68,7 @@ def arg_parser():
         dest='latency_sorting',
         help='Sort by latency (capacity)'
     )
+ 
     parser.add_argument(
         '-o', '--o',
         action='store_true',
@@ -63,6 +76,7 @@ def arg_parser():
         dest='online_filter',
         help='Only show online visible servers'
     )
+
     parser.add_argument(
         '-n', '--n',
         default=None,
@@ -70,11 +84,13 @@ def arg_parser():
         dest='limit_filter',
         help='Show first N servers'
     )
+
     parser.add_argument(
         '-v', '--version',
         action='version',
         version='%(prog)s 0.1.0'
     )
+
     return parser
 
 def search(search_term, data):
@@ -113,11 +129,11 @@ def search(search_term, data):
     return results
 
 def print_server(server):
-    print(
+    logging.info('{:>30} {:>20} {:>4}% capacity'.format(
         server['properties']['title'],
         server['properties']['hostname'],
-        str(server['properties']['capacity']) + '% capacity'
-    )
+        server['properties']['capacity']
+    ))
 
 def is_cache_fresh():
     try:
@@ -142,14 +158,10 @@ def cache_data(data):
     with open(cache_file_path(), 'w') as f:
         json_string = json.dumps(data)
         f.write(json_string)
-        print('API response is cached.')
+        logging.info('API response is cached.')
 
 def cache_file_path():
     return './servers.geojson'
-    # return os.path.join(
-    #     cache_dir_path(),
-    #     '.servers.geojson'
-    # )
 
 def cache_dir_path():
     return appdirs.user_cache_dir(
@@ -163,4 +175,8 @@ def unix_timestamp():
     )
 
 if __name__ == '__main__':
+    logging.basicConfig(
+        format='%(asctime)s %(levelname)s %(message)s',
+        level=logging.DEBUG
+    )
     process_command()
