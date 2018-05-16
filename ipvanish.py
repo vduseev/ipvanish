@@ -7,7 +7,10 @@ import json
 import os
 
 API_URL = 'https://www.ipvanish.com/api/servers.geojson'
-CACHE_TIMEOUT = 120  # seconds
+CACHE_TIMEOUT = 1200  # seconds
+PRINT_FORMAT = '{:22} {:10} {:30}'
+HEADLINE_SYMBOL = '-'
+
 
 def process_command():
     data = get_data()
@@ -28,6 +31,14 @@ def process_command():
     if args.limit_filter is not None:
         results = results[:args.limit_filter]
 
+    print(PRINT_FORMAT.format(
+        'Host:', 'Capacity:', 'Location:'
+    ))
+    print(PRINT_FORMAT.format(
+        21*HEADLINE_SYMBOL,
+        9*HEADLINE_SYMBOL,
+        29*HEADLINE_SYMBOL
+    ))
     for server in results:
         print_server(server)
 
@@ -129,10 +140,10 @@ def search(search_term, data):
     return results
 
 def print_server(server):
-    logging.info('{:>30} {:>20} {:>4}% capacity'.format(
-        server['properties']['title'],
+    print(PRINT_FORMAT.format(
         server['properties']['hostname'],
-        server['properties']['capacity']
+        str(server['properties']['capacity']) + '%',
+        server['properties']['title']
     ))
 
 def is_cache_fresh():
