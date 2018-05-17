@@ -7,14 +7,20 @@ import json
 import os
 
 API_URL = 'https://www.ipvanish.com/api/servers.geojson'
-CACHE_TIMEOUT = 1200  # seconds
+CACHE_TIMEOUT = 120  # seconds
 PRINT_FORMAT = '{:22} {:10} {:30}'
 HEADLINE_SYMBOL = '-'
 
 
 def process_command():
-    data = get_data()
     args = arg_parser().parse_args()
+    logging.basicConfig(
+        format='%(asctime)s %(levelname)s %(message)s',
+        level=logging._nameToLevel[args.log]
+    )
+
+    data = get_data()
+
     results = search(args.search_term, data)
 
     if args.latency_sorting:
@@ -73,7 +79,7 @@ def arg_parser():
     )
 
     parser.add_argument(
-        '-l', '--l',
+        '-l', '--latency',
         action='store_true',
         default=False,
         dest='latency_sorting',
@@ -81,7 +87,7 @@ def arg_parser():
     )
  
     parser.add_argument(
-        '-o', '--o',
+        '-o', '--online',
         action='store_true',
         default=False,
         dest='online_filter',
@@ -89,10 +95,11 @@ def arg_parser():
     )
 
     parser.add_argument(
-        '-n', '--n',
+        '-n', '--limit',
         default=None,
         type=int,
         dest='limit_filter',
+        metavar='limit',
         help='Show first N servers'
     )
 
@@ -100,6 +107,14 @@ def arg_parser():
         '-v', '--version',
         action='version',
         version='%(prog)s 0.1.0'
+    )
+
+    parser.add_argument(
+        '--log',
+        type=str,
+        choices=logging._nameToLevel.keys(),
+        default=logging.getLevelName(logging.WARNING),
+        help='Log level and verbosity'
     )
 
     return parser
@@ -186,8 +201,4 @@ def unix_timestamp():
     )
 
 if __name__ == '__main__':
-    logging.basicConfig(
-        format='%(asctime)s %(levelname)s %(message)s',
-        level=logging.DEBUG
-    )
     process_command()
